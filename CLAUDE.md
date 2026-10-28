@@ -56,3 +56,5 @@ src/app/
 ## Commits
 
 Conventional Commits en español e imperativo (`feat(shell): carga microfrontend de obras`). Sin coautoría ni firmas de la IA.
+
+Trabajo en ramas `feat/NNN-nombre` con *pull request* y revisión; nunca hagas *push* a `main` (está protegida). Detalle y definición de terminado: `docs/flujo-trabajo.md` del repo `supervision-docs`.
