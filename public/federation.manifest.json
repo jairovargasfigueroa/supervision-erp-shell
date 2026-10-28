@@ -1,0 +1,5 @@
+{
+  "mf-obras": "http://localhost:4201/remoteEntry.json",
+  "mf-materiales": "http://localhost:4202/remoteEntry.json",
+  "mf-supervision": "http://localhost:4203/remoteEntry.json"
+}
