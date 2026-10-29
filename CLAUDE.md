@@ -4,13 +4,14 @@ Contenedor del ERP: inicia la sesión con Keycloak, muestra el menú según el r
 
 Parte de la «Plataforma de supervisión de obras». Si existe `../../CLAUDE.md` (carpeta que agrupa todos los proyectos), léelo primero: tiene las reglas transversales, el plan y los contratos generales.
 
-**Estado:** proyecto generado con Native Federation configurado, sin pantallas propias. No implementes una funcionalidad sin su especificación aprobada en `docs/specs/`.
+**Estado:** fase 1. Inicia sesión con Keycloak, publica `window.plataforma`, muestra barra, menú y carga los tres microfrontends (aviso si uno no carga). Tema en `src/styles/tema.scss`. No implementes una funcionalidad sin su especificación aprobada en `docs/specs/`.
 
 ## Stack
 
 - Node 24 · Angular 22 (standalone, builder esbuild) · SCSS · pruebas con Vitest
 - `@angular-architects/native-federation` 22 como **host dinámico**
-- Previsto: keycloak-angular 22 (login OIDC), apollo-angular 14 (GraphQL), PWA en la capa 1
+- keycloak-angular 22 + keycloak-js 26 (login OIDC con PKCE) · Angular Material 22 (tema M3)
+- Previsto: PWA en la capa 1
 - Puerto: `4200`
 
 ## Comandos
@@ -28,16 +29,11 @@ npm run build
 - `public/federation.manifest.json`: dónde está cada remoto (`mf-obras` 4201, `mf-materiales` 4202, `mf-supervision` 4203).
 - `src/main.ts` inicia la federación y luego carga `src/bootstrap.ts`.
 - Remotos Angular (`mf-obras`): se cargan con `loadRemoteModule` y se usan como rutas o componentes.
-- Remotos React (`mf-materiales`, `mf-supervision`): se cargan con `loadRemoteModule('<nombre>', './Bootstrap')`, que registra un Web Component (`<mf-materiales>`, `<mf-supervision>`); el shell lo muestra con `CUSTOM_ELEMENTS_SCHEMA`.
+- Remotos React (`mf-materiales`, `mf-supervision`): se cargan con `loadRemoteModule('<nombre>', './Bootstrap')`, que registra un Web Component (`<mf-materiales>`, `<mf-supervision>`); el shell crea el elemento con `document.createElement` en `remotos/remoto-web-component.component.ts`.
 
-## Estructura prevista
+## Estructura
 
-```
-src/app/
-  shell/          diseño general, menú, barra superior
-  auth/           sesión con Keycloak y entrega del token a los microfrontends
-  remotes/        carga de cada microfrontend
-```
+Ver `docs/estructura.md` (`sesion/`, `diseno/`, `remotos/`, `compartido/`).
 
 ## Reglas del proyecto
 
@@ -57,4 +53,4 @@ src/app/
 
 Conventional Commits en español e imperativo (`feat(shell): carga microfrontend de obras`). Sin coautoría ni firmas de la IA.
 
-Trabajo en ramas `feat/NNN-nombre` con *pull request* y revisión; nunca hagas *push* a `main` (está protegida). Detalle y definición de terminado: `docs/flujo-trabajo.md` del repo `supervision-docs`.
+Git Flow: ramas `feat/`, `fix/`, `docs/`… desde `develop`, que entran por *pull request*; nunca hagas *push* a `main` ni a `develop` (están protegidas). El agente crea y fusiona los PR (merge normal, sin squash) hacia `develop` cuando todas las pruebas pasan. Detalle y definición de terminado: `docs/flujo-trabajo.md` del repo `supervision-docs`.

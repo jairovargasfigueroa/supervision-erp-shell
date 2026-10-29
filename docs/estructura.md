@@ -34,6 +34,7 @@ src/
     remotos/
       remoto-angular.ts            # ruta que carga un remoto Angular con loadRemoteModule
       remoto-web-component.component.ts  # carga ./Bootstrap y pinta <mf-...>; muestra error si falla
+      remoto-no-disponible.component.ts  # aviso «… no está disponible por el momento» + Reintentar
       remotos.ts                   # nombre del remoto → ruta, tipo (angular | web-component), etiqueta
     compartido/
       formato.ts                   # montos, fechas, porcentajes (es-BO)
