@@ -1,10 +1,42 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
+import {
+  AutoRefreshTokenService,
+  createInterceptorCondition,
+  includeBearerTokenInterceptor,
+  INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
+  provideKeycloak,
+  UserActivityService,
+  withAutoRefreshToken,
+  type IncludeBearerTokenCondition,
+} from 'keycloak-angular';
+import { environment } from '../environments/environment';
 import { routes } from './app.routes';
+
+const escapar = (texto: string) => texto.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes)
-  ]
+    // El shell es el único que inicia sesión (001, diseño «ERP»)
+    provideKeycloak({
+      config: { url: environment.keycloakUrl, realm: environment.realm, clientId: environment.clientId },
+      initOptions: { onLoad: 'login-required', pkceMethod: 'S256', checkLoginIframe: false },
+      // Renueva el token mientras el usuario trabaja; la sesión SSO dura 10 h en Keycloak
+      features: [withAutoRefreshToken({ onInactivityTimeout: 'none' })],
+      providers: [AutoRefreshTokenService, UserActivityService],
+    }),
+    // El token solo viaja al gateway
+    {
+      provide: INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
+      useValue: [
+        createInterceptorCondition<IncludeBearerTokenCondition>({
+          urlPattern: new RegExp(`^${escapar(environment.gatewayUrl)}`),
+        }),
+      ],
+    },
+    provideHttpClient(withInterceptors([includeBearerTokenInterceptor])),
+    provideRouter(routes),
+  ],
 };

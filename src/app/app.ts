@@ -1,12 +1,10 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ShellComponent } from './diseno/shell.component';
 
 @Component({
-  imports: [RouterOutlet],
   selector: 'app-root',
-  styleUrl: './app.scss',
-  templateUrl: './app.html',
+  imports: [ShellComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `<app-shell />`,
 })
-export class App {
-  protected readonly title = signal('erp-shell');
-}
+export class App {}
