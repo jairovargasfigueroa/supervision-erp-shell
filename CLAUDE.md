@@ -29,7 +29,7 @@ npm run build
 - `public/federation.manifest.json`: dónde está cada remoto (`mf-obras` 4201, `mf-materiales` 4202, `mf-supervision` 4203).
 - `src/main.ts` inicia la federación y luego carga `src/bootstrap.ts`.
 - Remotos Angular (`mf-obras`): se cargan con `loadRemoteModule` y se usan como rutas o componentes.
-- Remotos React (`mf-materiales`, `mf-supervision`): se cargan con `loadRemoteModule('<nombre>', './Bootstrap')`, que registra un Web Component (`<mf-materiales>`, `<mf-supervision>`); el shell lo muestra con `CUSTOM_ELEMENTS_SCHEMA`.
+- Remotos React (`mf-materiales`, `mf-supervision`): se cargan con `loadRemoteModule('<nombre>', './Bootstrap')`, que registra un Web Component (`<mf-materiales>`, `<mf-supervision>`); el shell crea el elemento con `document.createElement` en `remotos/remoto-web-component.component.ts`.
 
 ## Estructura
 
