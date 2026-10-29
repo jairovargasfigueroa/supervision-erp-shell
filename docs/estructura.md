@@ -26,10 +26,11 @@ src/
     sesion/
       sesion.service.ts            # lee Keycloak, expone signals y publica window.plataforma.sesion
       sesion-global.ts             # tipos de window.plataforma (compartidos con los microfrontends por copia)
-      sin-acceso.component.ts
+      sin-acceso.component.ts      # /sin-acceso: sin admin, residente ni gerente
+      acceso-erp.guard.ts          # canMatch de las rutas de los microfrontends
     diseno/
       shell.component.ts           # mat-toolbar + mat-sidenav + router-outlet
-      menu.ts                      # opciones por rol (función pura, probada)
+      menu.ts                      # opciones por rol, acceso al ERP y «Aplicaciones» (funciones puras, probadas)
       barra-usuario.component.ts
     remotos/
       remoto-angular.ts            # ruta que carga un remoto Angular con loadRemoteModule

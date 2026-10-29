@@ -29,7 +29,7 @@ import { opcionesMenu } from './menu';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <mat-toolbar class="barra">
-      @if (!escritorio()) {
+      @if (!escritorio() && opciones().length > 0) {
         <button mat-icon-button aria-label="Abrir el menú" (click)="menu.toggle()">
           <mat-icon fontSet="material-symbols-outlined">menu</mat-icon>
         </button>
@@ -43,7 +43,7 @@ import { opcionesMenu } from './menu';
         #menu
         class="menu"
         [mode]="escritorio() ? 'side' : 'over'"
-        [opened]="escritorio()"
+        [opened]="escritorio() && opciones().length > 0"
       >
         <mat-nav-list>
           @for (opcion of opciones(); track opcion.ruta) {
