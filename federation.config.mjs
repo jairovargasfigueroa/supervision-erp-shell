@@ -27,6 +27,8 @@ export default withNativeFederation({
     // Requieren @angular/animations, que no usamos
     '@angular/platform-browser/animations',
     '@angular/platform-browser/animations/async',
+    // Código de Node para `ng add`/`ng generate`, no para el navegador
+    /^@angular\/(cdk|material)\/schematics/,
   ],
 
   // Please read our docs about configuring native federation:
