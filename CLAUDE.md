@@ -11,7 +11,7 @@ Parte de la «Plataforma de supervisión de obras». Si existe `../../CLAUDE.md`
 - Node 24 · Angular 22 (standalone, builder esbuild) · SCSS · pruebas con Vitest
 - `@angular-architects/native-federation` 22 como **host dinámico**
 - keycloak-angular 22 + keycloak-js 26 (login OIDC con PKCE) · Angular Material 22 (tema M3)
-- Previsto: PWA en la capa 1
+- PWA (capa 1, 104): `@angular/pwa` (service worker de Angular, `@angular/service-worker`) e IndexedDB con `idb`. El service worker solo se prueba con la versión compilada (`npm run build` y un servidor estático en 4200; ver `README.md`), no con `ng serve`
 - Puerto: `4200`
 
 ## Comandos
