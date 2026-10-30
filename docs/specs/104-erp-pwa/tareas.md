@@ -5,7 +5,7 @@ Requisitos y diseño: `docs/specs/104-erp-pwa/` de la carpeta que agrupa los pro
 Marca cada tarea al terminarla (con sus pruebas y su commit).
 
 - [x] `ng add @angular/pwa`; manifiesto («Supervisión de obras»), íconos y registro del service worker solo fuera de desarrollo
-- [ ] `ngsw-config.json`: grupos `app`, `assets`, `remotos` (orígenes de los remotos) y `federation.manifest.json` con *freshness*
+- [x] `ngsw-config.json`: grupos `app`, `assets`, `remotos` (orígenes de los remotos) y `federation.manifest.json` con *freshness*
 - [ ] Aviso «Hay una versión nueva · Recargar» con `SwUpdate`
 - [ ] `ConexionService`: eventos del navegador, comprobación `{ salud }` cada 30 s, `window.plataforma.conexion` y evento `plataforma:conexion`
 - [ ] Instalar `idb`; `AlmacenService` con los tres almacenes, prefijo por usuario, límites y `window.plataforma.almacen`

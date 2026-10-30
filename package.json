@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build && ngsw-config dist/erp-shell/browser ngsw-config.json",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
