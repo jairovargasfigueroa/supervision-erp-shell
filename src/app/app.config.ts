@@ -1,4 +1,5 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, isDevMode, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { provideServiceWorker } from '@angular/service-worker';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import {
@@ -38,5 +39,10 @@ export const appConfig: ApplicationConfig = {
     },
     provideHttpClient(withInterceptors([includeBearerTokenInterceptor])),
     provideRouter(routes),
+    // PWA (104): solo con la versión compilada; ng serve no lo registra
+    provideServiceWorker('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerWhenStable:30000',
+    }),
   ],
 };

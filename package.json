@@ -20,6 +20,7 @@
     "@angular/material": "^22.2.5",
     "@angular/platform-browser": "^22.2.0",
     "@angular/router": "^22.2.0",
+    "@angular/service-worker": "^22.2.3",
     "es-module-shims": "^2.8.0",
     "keycloak-angular": "^22.0.0",
     "keycloak-js": "^26.2.5",
