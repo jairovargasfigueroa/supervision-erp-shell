@@ -6,7 +6,9 @@ import {
   KeycloakEventType,
   type KeycloakEvent,
 } from 'keycloak-angular';
+import { MatDialog } from '@angular/material/dialog';
 import Keycloak from 'keycloak-js';
+import { of } from 'rxjs';
 import { RECARGAR_PAGINA } from '../sin-conexion/actualizacion.service';
 import { AlmacenService, type SesionGuardada } from '../sin-conexion/almacen.service';
 import { ConexionService } from '../sin-conexion/conexion.service';
@@ -26,6 +28,10 @@ describe('SesionService', () => {
   let sesionGuardada: SesionGuardada | null;
   let guardadas: UsuarioSesion[];
   let recargas: number;
+  let borradores: number;
+  let borrados: string[];
+  let respuestaDialogo: boolean | undefined;
+  let dialogos: { cantidad: number }[];
   let eventosSesion: number;
   const enLinea = signal(true);
   const eventosKeycloak = signal<KeycloakEvent>({
@@ -70,11 +76,25 @@ describe('SesionService', () => {
               return Promise.resolve();
             },
             usarUsuario: () => Promise.resolve(),
+            listarBorradoresPlanilla: () => Promise.resolve(new Array(borradores).fill({})),
+            borrarDatosUsuario: (id: string) => {
+              borrados.push(id);
+              return Promise.resolve();
+            },
           },
         },
         { provide: ConexionService, useValue: { enLinea } },
         { provide: KEYCLOAK_RESPONDE, useValue: () => Promise.resolve(keycloakResponde) },
         { provide: RECARGAR_PAGINA, useValue: () => recargas++ },
+        {
+          provide: MatDialog,
+          useValue: {
+            open: (_: unknown, config: { data: { cantidad: number } }) => {
+              dialogos.push(config.data);
+              return { afterClosed: () => of(respuestaDialogo) };
+            },
+          },
+        },
       ],
     });
     return TestBed.inject(SesionService);
@@ -90,6 +110,10 @@ describe('SesionService', () => {
     sesionGuardada = null;
     guardadas = [];
     recargas = 0;
+    borradores = 0;
+    borrados = [];
+    respuestaDialogo = undefined;
+    dialogos = [];
     eventosSesion = 0;
     enLinea.set(true);
     eventosKeycloak.set({ type: KeycloakEventType.KeycloakAngularNotInitialized });
@@ -267,5 +291,64 @@ describe('SesionService', () => {
     eventosKeycloak.set({ type: KeycloakEventType.AuthRefreshError });
     TestBed.tick();
     await vi.waitFor(() => expect(keycloak.login).toHaveBeenCalled());
+  });
+
+  describe('cerrar sesión', () => {
+    it('sin borradores borra los datos del usuario y cierra la sesión de Keycloak', async () => {
+      autenticarComo(ana);
+      const sesion = crear();
+      await sesion.iniciar();
+
+      await sesion.cerrarSesion();
+
+      expect(dialogos).toEqual([]);
+      expect(borrados).toEqual(['u-ana']);
+      expect(window.plataforma?.sesion).toBeUndefined();
+      expect(keycloak.logout).toHaveBeenCalledWith({ redirectUri: window.location.origin });
+    });
+
+    it('con borradores avisa y, si cancela, no borra nada', async () => {
+      autenticarComo(ana);
+      borradores = 2;
+      respuestaDialogo = false;
+      const sesion = crear();
+      await sesion.iniciar();
+
+      await sesion.cerrarSesion();
+
+      expect(dialogos).toEqual([{ cantidad: 2 }]);
+      expect(borrados).toEqual([]);
+      expect(keycloak.logout).not.toHaveBeenCalled();
+      expect(window.plataforma?.sesion?.usuario).toEqual(ana);
+    });
+
+    it('con borradores y confirmación borra los datos y cierra la sesión', async () => {
+      autenticarComo(ana);
+      borradores = 1;
+      respuestaDialogo = true;
+      const sesion = crear();
+      await sesion.iniciar();
+
+      await sesion.cerrarSesion();
+
+      expect(dialogos).toEqual([{ cantidad: 1 }]);
+      expect(borrados).toEqual(['u-ana']);
+      expect(keycloak.logout).toHaveBeenCalled();
+    });
+
+    it('en «modo sin conexión» borra los datos y deja la pantalla para iniciar sesión', async () => {
+      navegadorEnLinea = false;
+      enLinea.set(false);
+      sesionGuardada = guardadaHace(HORA);
+      const sesion = crear();
+      await sesion.iniciar();
+
+      await sesion.cerrarSesion();
+
+      expect(borrados).toEqual(['u-ana']);
+      expect(keycloak.logout).not.toHaveBeenCalled();
+      expect(sesion.modo()).toBe('requiere-conexion');
+      expect(sesion.usuario()).toBeNull();
+    });
   });
 });

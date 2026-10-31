@@ -17,6 +17,9 @@ import { environment } from '../../environments/environment';
 import { RECARGAR_PAGINA } from '../sin-conexion/actualizacion.service';
 import { AlmacenService } from '../sin-conexion/almacen.service';
 import { ConexionService } from '../sin-conexion/conexion.service';
+import { MatDialog } from '@angular/material/dialog';
+import { firstValueFrom } from 'rxjs';
+import { ConfirmarCierreComponent } from './confirmar-cierre.component';
 import { EVENTO_SESION, type UsuarioSesion } from './sesion-global';
 
 /** Hasta cuánto tiempo después del último inicio de sesión se puede entrar sin conexión (104, decisión del equipo). */
@@ -66,6 +69,7 @@ export class SesionService {
   private readonly conexion = inject(ConexionService);
   private readonly keycloakResponde = inject(KEYCLOAK_RESPONDE);
   private readonly recargar = inject(RECARGAR_PAGINA);
+  private readonly dialogos = inject(MatDialog);
 
   readonly usuario = signal<UsuarioSesion | null>(null);
   readonly roles = computed(() => this.usuario()?.roles ?? []);
@@ -144,14 +148,54 @@ export class SesionService {
     }
   }
 
-  cerrarSesion(): void {
+  /**
+   * Cierra la sesión (001, criterio 11). Antes avisa si hay borradores de planilla sin enviar y, si el usuario
+   * confirma, borra del equipo sus consultas, borradores y la última sesión (104, criterio 19).
+   */
+  async cerrarSesion(): Promise<void> {
+    const usuario = this.usuario();
+    if (usuario) {
+      const borradores = await this.almacen.listarBorradoresPlanilla().catch(() => []);
+      if (borradores.length > 0) {
+        const confirmado = await firstValueFrom(
+          this.dialogos
+            .open<ConfirmarCierreComponent, { cantidad: number }, boolean>(
+              ConfirmarCierreComponent,
+              {
+                data: { cantidad: borradores.length },
+              },
+            )
+            .afterClosed(),
+        );
+        if (!confirmado) {
+          return;
+        }
+      }
+      await this.almacen.borrarDatosUsuario(usuario.id).catch((error: unknown) => {
+        console.error('No se pudieron borrar los datos guardados en el equipo', error);
+      });
+    }
+
+    const modoAnterior = this.modo();
+    this.usuario.set(null);
+    void this.almacen.usarUsuario(null);
     window.plataforma = {
       ...window.plataforma,
       configuracion: { gatewayUrl: environment.gatewayUrl },
       sesion: undefined,
     };
     window.dispatchEvent(new Event(EVENTO_SESION));
-    void this.keycloak.logout({ redirectUri: window.location.origin });
+
+    const keycloakDisponible =
+      this.keycloak.didInitialize &&
+      (modoAnterior === 'activa' || (navigator.onLine && (await this.keycloakResponde())));
+    if (keycloakDisponible) {
+      void this.keycloak.logout({ redirectUri: window.location.origin });
+    } else {
+      // Sin conexión no se llega a Keycloak: queda la pantalla para iniciar sesión al volver la conexión
+      this.requiereInicio.set(false);
+      this.modo.set('requiere-conexion');
+    }
   }
 
   private activar(): void {
@@ -266,7 +310,7 @@ export class SesionService {
         ? {
             usuario,
             obtenerToken: () => this.obtenerToken(),
-            cerrarSesion: () => this.cerrarSesion(),
+            cerrarSesion: () => void this.cerrarSesion(),
             sinConexion: this.modo() !== 'activa',
           }
         : undefined,

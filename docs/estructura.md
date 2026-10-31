@@ -28,6 +28,7 @@ src/
       sesion-global.ts             # tipos de window.plataforma (compartidos con los microfrontends por copia)
       sin-acceso.component.ts      # /sin-acceso: sin admin, residente ni gerente
       requiere-conexion.component.ts  # 104: «Conéctate a internet para iniciar sesión»
+      confirmar-cierre.component.ts   # 104: aviso al cerrar sesión con borradores de planilla sin enviar
       acceso-erp.guard.ts          # canMatch de las rutas de los microfrontends
     diseno/
       shell.component.ts           # mat-toolbar + mat-sidenav + router-outlet
