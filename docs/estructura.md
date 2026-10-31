@@ -4,7 +4,7 @@ Obligatorio para todo el código de este proyecto.
 
 ## Librerías
 
-Angular 22 (standalone, *signals*, nuevo control de flujo `@if`/`@for`), `@angular/material` + `@angular/cdk` 22, Material Symbols, `@angular-architects/native-federation` 22, `keycloak-angular` 22 + `keycloak-js` 26, `@angular/pwa` 22 (capa 1). Sin NgRx. El shell **no** consulta datos del negocio (no usa Apollo). Pruebas con Vitest.
+Angular 22 (standalone, *signals*, nuevo control de flujo `@if`/`@for`), `@angular/material` + `@angular/cdk` 22, Material Symbols, `@angular-architects/native-federation` 22, `keycloak-angular` 22 + `keycloak-js` 26, `@angular/pwa` 22 e `idb` 8 (capa 1, 104). Pruebas del almacén con `fake-indexeddb` (solo desarrollo). Sin NgRx. El shell **no** consulta datos del negocio (no usa Apollo). Pruebas con Vitest.
 
 ## Tema y fuentes
 
@@ -21,25 +21,35 @@ src/
   styles.scss, styles/tema.scss
   environments/environment.ts      # urls: keycloak, gateway, portal; nombres de remotos
   app/
-    app.config.ts                  # provideRouter, provideKeycloak, provideHttpClient(interceptor), Material
+    app.config.ts                  # provideRouter, provideKeycloak, provideHttpClient(interceptor), Material, provideServiceWorker
     app.routes.ts                  # /obras/**, /materiales/**, /supervision/**, /sin-acceso
     sesion/
-      sesion.service.ts            # lee Keycloak, expone signals y publica window.plataforma.sesion
+      sesion.service.ts            # inicia Keycloak (o el «modo sin conexión» de 24 h, 104), expone signals y publica window.plataforma.sesion
       sesion-global.ts             # tipos de window.plataforma (compartidos con los microfrontends por copia)
       sin-acceso.component.ts      # /sin-acceso: sin admin, residente ni gerente
+      requiere-conexion.component.ts  # 104: «Conéctate a internet para iniciar sesión»
+      confirmar-cierre.component.ts   # 104: aviso al cerrar sesión con borradores de planilla sin enviar
       acceso-erp.guard.ts          # canMatch de las rutas de los microfrontends
     diseno/
       shell.component.ts           # mat-toolbar + mat-sidenav + router-outlet
       menu.ts                      # opciones por rol, acceso al ERP y «Aplicaciones» (funciones puras, probadas)
       barra-usuario.component.ts
+      indicador-conexion.component.ts  # 104: «Sin conexión» y «Borradores sin enviar (N)» (abre /obras/planillas/{id} o una lista)
     remotos/
       remoto-angular.ts            # ruta que carga un remoto Angular con loadRemoteModule
       remoto-web-component.component.ts  # carga ./Bootstrap y pinta <mf-...>; muestra error si falla
       remoto-no-disponible.component.ts  # aviso «… no está disponible por el momento» + Reintentar
       remotos.ts                   # nombre del remoto → ruta, tipo (angular | web-component), etiqueta
+    sin-conexion/                  # 104 (PWA)
+      actualizacion.service.ts     # SwUpdate: aviso «Hay una versión nueva · Recargar»
+      conexion.service.ts          # en línea / sin conexión: eventos del navegador y { salud } cada 30 s; window.plataforma.conexion
+      almacen.service.ts           # IndexedDB plataforma-erp (consultas, borradores_planilla, sesion) por usuario; window.plataforma.almacen
     compartido/
-      formato.ts                   # montos, fechas, porcentajes (es-BO)
+      formato.ts                   # montos, fechas, porcentajes y periodos (es-BO)
 public/federation.manifest.json
+public/manifest.webmanifest, public/icons/   # 104: instalación como aplicación
+public/silent-check-sso.html       # 104: respuesta de check-sso al reanudar la sesión
+ngsw-config.json                   # 104: qué guarda el service worker
 ```
 
 ## Reglas

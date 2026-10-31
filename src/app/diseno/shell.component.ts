@@ -10,6 +10,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { map } from 'rxjs';
 import { SesionService } from '../sesion/sesion.service';
 import { BarraUsuarioComponent } from './barra-usuario.component';
+import { IndicadorConexionComponent } from './indicador-conexion.component';
 import { opcionesMenu } from './menu';
 
 /** Barra superior, menú lateral y espacio de los microfrontends (docs/diseno-visual.md, «Distribución del ERP»). */
@@ -25,6 +26,7 @@ import { opcionesMenu } from './menu';
     RouterLink,
     RouterLinkActive,
     BarraUsuarioComponent,
+    IndicadorConexionComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -36,6 +38,7 @@ import { opcionesMenu } from './menu';
       }
       <span class="marca">Supervisión de obras</span>
       <span class="espacio"></span>
+      <app-indicador-conexion />
       <app-barra-usuario />
     </mat-toolbar>
     <mat-sidenav-container class="contenedor">
