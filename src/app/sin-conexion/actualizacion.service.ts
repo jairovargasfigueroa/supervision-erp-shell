@@ -29,5 +29,23 @@ export class ActualizacionService {
           .onAction()
           .subscribe(() => this.recargar());
       });
+    this.guardarManifiestoAlTomarControl();
+  }
+
+  /**
+   * En la primera visita el ERP pide federation.manifest.json antes de que el service worker controle la página, así
+   * que no queda guardado y el ERP no podría arrancar sin conexión. Cuando el service worker toma el control, se vuelve
+   * a pedir para que lo guarde su dataGroup «manifiesto-federacion».
+   */
+  private guardarManifiestoAlTomarControl(): void {
+    const serviceWorker = navigator.serviceWorker;
+    if (!serviceWorker || serviceWorker.controller) {
+      return;
+    }
+    serviceWorker.addEventListener(
+      'controllerchange',
+      () => void fetch('federation.manifest.json').catch(() => undefined),
+      { once: true },
+    );
   }
 }

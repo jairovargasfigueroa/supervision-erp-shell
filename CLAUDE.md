@@ -20,7 +20,8 @@ Parte de la «Plataforma de supervisión de obras». Si existe `../../CLAUDE.md`
 npm install
 npm start            # ng serve en http://localhost:4200
 npm test             # ng test (Vitest)
-npm run build
+npm run build        # también genera ngsw.json (service worker, 104)
+npm run servir:pwa   # sirve la versión compilada en http://localhost:4200 para probar sin conexión (README.md)
 ```
 
 ## Native Federation

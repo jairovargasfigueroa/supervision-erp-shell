@@ -56,4 +56,24 @@ describe('ActualizacionService', () => {
     TestBed.tick();
     expect(aviso()).toBeNull();
   });
+
+  it('pide otra vez federation.manifest.json cuando el service worker toma el control', () => {
+    const contenedor = new EventTarget() as EventTarget & { controller: unknown };
+    contenedor.controller = null;
+    // jsdom no tiene navigator.serviceWorker
+    Object.defineProperty(navigator, 'serviceWorker', { configurable: true, value: contenedor });
+    const pedidos: string[] = [];
+    vi.spyOn(globalThis, 'fetch').mockImplementation((url) => {
+      pedidos.push(String(url));
+      return Promise.resolve(new Response('{}'));
+    });
+    preparar();
+
+    expect(pedidos).toEqual([]);
+    contenedor.dispatchEvent(new Event('controllerchange'));
+    contenedor.dispatchEvent(new Event('controllerchange'));
+    expect(pedidos).toEqual(['federation.manifest.json']);
+    vi.restoreAllMocks();
+    Reflect.deleteProperty(navigator, 'serviceWorker');
+  });
 });

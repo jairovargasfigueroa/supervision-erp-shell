@@ -36,12 +36,13 @@ export const KEYCLOAK_RESPONDE = new InjectionToken<() => Promise<boolean>>('KEY
   providedIn: 'root',
   factory: () => async () => {
     try {
-      await fetch(`${environment.keycloakUrl}/realms/${environment.realm}`, {
+      const respuesta = await fetch(`${environment.keycloakUrl}/realms/${environment.realm}`, {
         mode: 'no-cors',
         cache: 'no-store',
         signal: AbortSignal.timeout(3_000),
       });
-      return true;
+      // La respuesta real es «opaque»; si la red falla, el service worker de Angular responde él mismo con un 504
+      return respuesta.type === 'opaque' || respuesta.status < 500;
     } catch {
       return false;
     }
