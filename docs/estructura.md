@@ -21,7 +21,7 @@ src/
   styles.scss, styles/tema.scss
   environments/environment.ts      # urls: keycloak, gateway, portal; nombres de remotos
   app/
-    app.config.ts                  # provideRouter, provideKeycloak, provideHttpClient(interceptor), Material
+    app.config.ts                  # provideRouter, provideKeycloak, provideHttpClient(interceptor), Material, provideServiceWorker
     app.routes.ts                  # /obras/**, /materiales/**, /supervision/**, /sin-acceso
     sesion/
       sesion.service.ts            # lee Keycloak, expone signals y publica window.plataforma.sesion
@@ -37,9 +37,13 @@ src/
       remoto-web-component.component.ts  # carga ./Bootstrap y pinta <mf-...>; muestra error si falla
       remoto-no-disponible.component.ts  # aviso «… no está disponible por el momento» + Reintentar
       remotos.ts                   # nombre del remoto → ruta, tipo (angular | web-component), etiqueta
+    sin-conexion/                  # 104 (PWA)
+      actualizacion.service.ts     # SwUpdate: aviso «Hay una versión nueva · Recargar»
     compartido/
       formato.ts                   # montos, fechas, porcentajes (es-BO)
 public/federation.manifest.json
+public/manifest.webmanifest, public/icons/   # 104: instalación como aplicación
+ngsw-config.json                   # 104: qué guarda el service worker
 ```
 
 ## Reglas
