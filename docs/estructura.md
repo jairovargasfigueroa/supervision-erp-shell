@@ -39,6 +39,7 @@ src/
       remotos.ts                   # nombre del remoto → ruta, tipo (angular | web-component), etiqueta
     sin-conexion/                  # 104 (PWA)
       actualizacion.service.ts     # SwUpdate: aviso «Hay una versión nueva · Recargar»
+      conexion.service.ts          # en línea / sin conexión: eventos del navegador y { salud } cada 30 s; window.plataforma.conexion
     compartido/
       formato.ts                   # montos, fechas, porcentajes (es-BO)
 public/federation.manifest.json

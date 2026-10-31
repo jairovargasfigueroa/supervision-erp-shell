@@ -35,7 +35,11 @@ export class SesionService {
   }
 
   cerrarSesion(): void {
-    window.plataforma = { configuracion: { gatewayUrl: environment.gatewayUrl } };
+    window.plataforma = {
+      ...window.plataforma,
+      configuracion: { gatewayUrl: environment.gatewayUrl },
+      sesion: undefined,
+    };
     window.dispatchEvent(new Event(EVENTO_SESION));
     void this.keycloak.logout({ redirectUri: window.location.origin });
   }
@@ -45,15 +49,24 @@ export class SesionService {
     const usuario: UsuarioSesion | null = datos
       ? {
           id: datos.sub ?? '',
-          nombre: (datos['name'] as string | undefined) ?? (datos['preferred_username'] as string | undefined) ?? '',
+          nombre:
+            (datos['name'] as string | undefined) ??
+            (datos['preferred_username'] as string | undefined) ??
+            '',
           roles: datos.realm_access?.roles ?? [],
         }
       : null;
     this.usuario.set(usuario);
+    // Conserva lo que publican otros servicios del shell (conexion, almacen)
     window.plataforma = {
+      ...window.plataforma,
       configuracion: { gatewayUrl: environment.gatewayUrl },
       sesion: usuario
-        ? { usuario, obtenerToken: () => this.obtenerToken(), cerrarSesion: () => this.cerrarSesion() }
+        ? {
+            usuario,
+            obtenerToken: () => this.obtenerToken(),
+            cerrarSesion: () => this.cerrarSesion(),
+          }
         : undefined,
     };
     window.dispatchEvent(new Event(EVENTO_SESION));
