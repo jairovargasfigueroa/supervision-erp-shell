@@ -34,6 +34,7 @@ src/
       shell.component.ts           # mat-toolbar + mat-sidenav + router-outlet
       menu.ts                      # opciones por rol, acceso al ERP y «Aplicaciones» (funciones puras, probadas)
       barra-usuario.component.ts
+      indicador-conexion.component.ts  # 104: «Sin conexión» y «Borradores sin enviar (N)» (abre /obras/planillas/{id} o una lista)
     remotos/
       remoto-angular.ts            # ruta que carga un remoto Angular con loadRemoteModule
       remoto-web-component.component.ts  # carga ./Bootstrap y pinta <mf-...>; muestra error si falla
@@ -44,7 +45,7 @@ src/
       conexion.service.ts          # en línea / sin conexión: eventos del navegador y { salud } cada 30 s; window.plataforma.conexion
       almacen.service.ts           # IndexedDB plataforma-erp (consultas, borradores_planilla, sesion) por usuario; window.plataforma.almacen
     compartido/
-      formato.ts                   # montos, fechas, porcentajes (es-BO)
+      formato.ts                   # montos, fechas, porcentajes y periodos (es-BO)
 public/federation.manifest.json
 public/manifest.webmanifest, public/icons/   # 104: instalación como aplicación
 public/silent-check-sso.html       # 104: respuesta de check-sso al reanudar la sesión
