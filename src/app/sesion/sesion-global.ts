@@ -21,9 +21,40 @@ export interface ConexionPlataforma {
   reportarFallo(): void;
 }
 
+/** Borrador de una planilla guardado en el equipo (104). */
+export interface BorradorPlanilla {
+  planillaId: string;
+  obraId: string;
+  numero: number;
+  periodo: string;
+  /** version de la planilla sobre la que se editó */
+  versionBase: number;
+  lineas: { partidaId: string; cantidadPeriodo: number }[];
+  fotoIds: string[];
+  /** ISO */
+  guardadoEn: string;
+  estadoEnvio: 'PENDIENTE' | 'CONFLICTO' | 'NO_EDITABLE' | 'RECHAZADO';
+  ultimoError?: {
+    codigo: string;
+    mensaje: string;
+    errores?: { campo: string; mensaje: string }[];
+  };
+}
+
+/** Almacén local en IndexedDB, separado por usuario (el prefijo lo agrega el shell) (104). */
+export interface AlmacenPlataforma {
+  guardarConsulta(clave: string, datos: unknown): Promise<void>;
+  leerConsulta<T>(clave: string): Promise<{ datos: T; guardadoEn: string } | null>;
+  guardarBorradorPlanilla(borrador: BorradorPlanilla): Promise<void>;
+  leerBorradorPlanilla(planillaId: string): Promise<BorradorPlanilla | null>;
+  listarBorradoresPlanilla(): Promise<BorradorPlanilla[]>;
+  borrarBorradorPlanilla(planillaId: string): Promise<void>;
+}
+
 export interface Plataforma {
   sesion?: SesionPlataforma;
   conexion?: ConexionPlataforma;
+  almacen?: AlmacenPlataforma;
   configuracion: { gatewayUrl: string };
 }
 
@@ -32,6 +63,9 @@ export const EVENTO_SESION = 'plataforma:sesion';
 
 /** Evento que el shell emite en window cuando cambia la conexión; `detail: { enLinea }` (104). */
 export const EVENTO_CONEXION = 'plataforma:conexion';
+
+/** Evento que el shell emite en window cuando cambia la lista de borradores de planilla (104). */
+export const EVENTO_BORRADORES = 'plataforma:borradores';
 
 declare global {
   interface Window {

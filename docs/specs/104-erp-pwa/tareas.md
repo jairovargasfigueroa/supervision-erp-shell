@@ -8,7 +8,7 @@ Marca cada tarea al terminarla (con sus pruebas y su commit).
 - [x] `ngsw-config.json`: grupos `app`, `assets`, `remotos` (orígenes de los remotos) y `federation.manifest.json` con *freshness*
 - [x] Aviso «Hay una versión nueva · Recargar» con `SwUpdate`
 - [x] `ConexionService`: eventos del navegador, comprobación `{ salud }` cada 30 s, `window.plataforma.conexion` y evento `plataforma:conexion`
-- [ ] Instalar `idb`; `AlmacenService` con los tres almacenes, prefijo por usuario, límites y `window.plataforma.almacen`
+- [x] Instalar `idb`; `AlmacenService` con los tres almacenes, prefijo por usuario, límites y `window.plataforma.almacen`
 - [ ] Sesión sin conexión (24 h), reanudación con `check-sso` y `silent-check-sso.html`
 - [ ] Cierre de sesión con aviso de borradores y borrado de los datos del usuario
 - [ ] Barra superior: «Sin conexión» y «Borradores sin enviar (N)»

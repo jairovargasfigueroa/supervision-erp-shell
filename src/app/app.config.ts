@@ -22,6 +22,7 @@ import { environment } from '../environments/environment';
 import { routes } from './app.routes';
 import { ActualizacionService } from './sin-conexion/actualizacion.service';
 import { ConexionService } from './sin-conexion/conexion.service';
+import { AlmacenService } from './sin-conexion/almacen.service';
 
 const escapar = (texto: string) => texto.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -58,5 +59,6 @@ export const appConfig: ApplicationConfig = {
     }),
     provideAppInitializer(() => inject(ActualizacionService).iniciar()),
     provideAppInitializer(() => inject(ConexionService).iniciar()),
+    provideAppInitializer(() => inject(AlmacenService).iniciar()),
   ],
 };

@@ -4,7 +4,7 @@ Obligatorio para todo el código de este proyecto.
 
 ## Librerías
 
-Angular 22 (standalone, *signals*, nuevo control de flujo `@if`/`@for`), `@angular/material` + `@angular/cdk` 22, Material Symbols, `@angular-architects/native-federation` 22, `keycloak-angular` 22 + `keycloak-js` 26, `@angular/pwa` 22 (capa 1). Sin NgRx. El shell **no** consulta datos del negocio (no usa Apollo). Pruebas con Vitest.
+Angular 22 (standalone, *signals*, nuevo control de flujo `@if`/`@for`), `@angular/material` + `@angular/cdk` 22, Material Symbols, `@angular-architects/native-federation` 22, `keycloak-angular` 22 + `keycloak-js` 26, `@angular/pwa` 22 e `idb` 8 (capa 1, 104). Pruebas del almacén con `fake-indexeddb` (solo desarrollo). Sin NgRx. El shell **no** consulta datos del negocio (no usa Apollo). Pruebas con Vitest.
 
 ## Tema y fuentes
 
@@ -40,6 +40,7 @@ src/
     sin-conexion/                  # 104 (PWA)
       actualizacion.service.ts     # SwUpdate: aviso «Hay una versión nueva · Recargar»
       conexion.service.ts          # en línea / sin conexión: eventos del navegador y { salud } cada 30 s; window.plataforma.conexion
+      almacen.service.ts           # IndexedDB plataforma-erp (consultas, borradores_planilla, sesion) por usuario; window.plataforma.almacen
     compartido/
       formato.ts                   # montos, fechas, porcentajes (es-BO)
 public/federation.manifest.json

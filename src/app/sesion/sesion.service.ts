@@ -2,6 +2,7 @@ import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { KEYCLOAK_EVENT_SIGNAL, KeycloakEventType } from 'keycloak-angular';
 import Keycloak from 'keycloak-js';
 import { environment } from '../../environments/environment';
+import { AlmacenService } from '../sin-conexion/almacen.service';
 import { EVENTO_SESION, type UsuarioSesion } from './sesion-global';
 
 /**
@@ -12,6 +13,7 @@ import { EVENTO_SESION, type UsuarioSesion } from './sesion-global';
 export class SesionService {
   private readonly keycloak = inject(Keycloak);
   private readonly eventos = inject(KEYCLOAK_EVENT_SIGNAL);
+  private readonly almacen = inject(AlmacenService);
 
   readonly usuario = signal<UsuarioSesion | null>(null);
   readonly roles = computed(() => this.usuario()?.roles ?? []);
@@ -57,6 +59,8 @@ export class SesionService {
         }
       : null;
     this.usuario.set(usuario);
+    // Los datos guardados en el equipo son de este usuario (104)
+    void this.almacen.usarUsuario(usuario?.id ?? null);
     // Conserva lo que publican otros servicios del shell (conexion, almacen)
     window.plataforma = {
       ...window.plataforma,
