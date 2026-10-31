@@ -24,9 +24,10 @@ src/
     app.config.ts                  # provideRouter, provideKeycloak, provideHttpClient(interceptor), Material, provideServiceWorker
     app.routes.ts                  # /obras/**, /materiales/**, /supervision/**, /sin-acceso
     sesion/
-      sesion.service.ts            # lee Keycloak, expone signals y publica window.plataforma.sesion
+      sesion.service.ts            # inicia Keycloak (o el «modo sin conexión» de 24 h, 104), expone signals y publica window.plataforma.sesion
       sesion-global.ts             # tipos de window.plataforma (compartidos con los microfrontends por copia)
       sin-acceso.component.ts      # /sin-acceso: sin admin, residente ni gerente
+      requiere-conexion.component.ts  # 104: «Conéctate a internet para iniciar sesión»
       acceso-erp.guard.ts          # canMatch de las rutas de los microfrontends
     diseno/
       shell.component.ts           # mat-toolbar + mat-sidenav + router-outlet
@@ -45,6 +46,7 @@ src/
       formato.ts                   # montos, fechas, porcentajes (es-BO)
 public/federation.manifest.json
 public/manifest.webmanifest, public/icons/   # 104: instalación como aplicación
+public/silent-check-sso.html       # 104: respuesta de check-sso al reanudar la sesión
 ngsw-config.json                   # 104: qué guarda el service worker
 ```
 

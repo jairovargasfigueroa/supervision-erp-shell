@@ -15,7 +15,6 @@ import {
   INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
   provideKeycloak,
   UserActivityService,
-  withAutoRefreshToken,
   type IncludeBearerTokenCondition,
 } from 'keycloak-angular';
 import { environment } from '../environments/environment';
@@ -23,6 +22,7 @@ import { routes } from './app.routes';
 import { ActualizacionService } from './sin-conexion/actualizacion.service';
 import { ConexionService } from './sin-conexion/conexion.service';
 import { AlmacenService } from './sin-conexion/almacen.service';
+import { SesionService } from './sesion/sesion.service';
 
 const escapar = (texto: string) => texto.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -36,9 +36,7 @@ export const appConfig: ApplicationConfig = {
         realm: environment.realm,
         clientId: environment.clientId,
       },
-      initOptions: { onLoad: 'login-required', pkceMethod: 'S256', checkLoginIframe: false },
-      // Renueva el token mientras el usuario trabaja; la sesión SSO dura 10 h en Keycloak
-      features: [withAutoRefreshToken({ onInactivityTimeout: 'none' })],
+      // Sin initOptions: SesionService.iniciar() decide si inicia con Keycloak o sin conexión (104)
       providers: [AutoRefreshTokenService, UserActivityService],
     }),
     // El token solo viaja al gateway
@@ -60,5 +58,6 @@ export const appConfig: ApplicationConfig = {
     provideAppInitializer(() => inject(ActualizacionService).iniciar()),
     provideAppInitializer(() => inject(ConexionService).iniciar()),
     provideAppInitializer(() => inject(AlmacenService).iniciar()),
+    provideAppInitializer(() => inject(SesionService).iniciar()),
   ],
 };

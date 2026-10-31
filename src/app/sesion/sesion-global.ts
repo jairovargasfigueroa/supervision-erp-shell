@@ -12,6 +12,8 @@ export interface SesionPlataforma {
   /** Devuelve un token vigente; lo renueva si vence en menos de 30 s. */
   obtenerToken(): Promise<string>;
   cerrarSesion(): void;
+  /** 104: «modo sin conexión» (sesión de las últimas 24 h guardada en el equipo); obtenerToken() rechaza con Error('SIN_CONEXION'). */
+  sinConexion: boolean;
 }
 
 /** Estado de la conexión que comparten el shell y los microfrontends (104). */

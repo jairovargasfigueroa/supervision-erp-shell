@@ -26,6 +26,13 @@ import { aplicacionesWeb, rolPrincipal } from './menu';
         }
       </mat-menu>
     }
+    @if (sesion.requiereInicio()) {
+      <!-- 104, criterio 4: volvió la conexión pero la sesión de Keycloak venció -->
+      <button mat-flat-button class="iniciar" (click)="sesion.iniciarSesion()">
+        <mat-icon fontSet="material-symbols-outlined">login</mat-icon>
+        Iniciar sesión
+      </button>
+    }
     <span class="usuario">
       <span class="nombre">{{ sesion.usuario()?.nombre }}</span>
       <span class="rol">{{ rol() }}</span>
@@ -40,6 +47,10 @@ import { aplicacionesWeb, rolPrincipal } from './menu';
       display: flex;
       align-items: center;
       gap: 12px;
+    }
+    .iniciar {
+      --mat-button-filled-container-color: var(--sv-acento);
+      --mat-button-filled-label-text-color: #ffffff;
     }
     .usuario {
       display: flex;
@@ -65,5 +76,7 @@ import { aplicacionesWeb, rolPrincipal } from './menu';
 export class BarraUsuarioComponent {
   protected readonly sesion = inject(SesionService);
   protected readonly rol = computed(() => rolPrincipal(this.sesion.roles()));
-  protected readonly aplicaciones = computed(() => aplicacionesWeb(this.sesion.roles(), environment.portalUrl));
+  protected readonly aplicaciones = computed(() =>
+    aplicacionesWeb(this.sesion.roles(), environment.portalUrl),
+  );
 }
