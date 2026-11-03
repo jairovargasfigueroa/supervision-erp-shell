@@ -16,10 +16,10 @@ Angular 22 (standalone, *signals*, nuevo control de flujo `@if`/`@for`), `@angul
 
 ```
 src/
-  main.ts / bootstrap.ts           # federación primero, luego Angular (no cambiar el orden)
+  main.ts / bootstrap.ts           # configuracion.json y federación primero, luego Angular (no cambiar el orden)
   index.html
   styles.scss, styles/tema.scss
-  environments/environment.ts      # urls: keycloak, gateway, portal; nombres de remotos
+  environments/environment.ts      # valores de desarrollo: keycloak, realm, clientId, gateway, portal
   app/
     app.config.ts                  # provideRouter, provideKeycloak, provideHttpClient(interceptor), Material, provideServiceWorker
     app.routes.ts                  # /obras/**, /materiales/**, /supervision/**, /sin-acceso
@@ -46,10 +46,14 @@ src/
       almacen.service.ts           # IndexedDB plataforma-erp (consultas, borradores_planilla, sesion) por usuario; window.plataforma.almacen
     compartido/
       formato.ts                   # montos, fechas, porcentajes y periodos (es-BO)
-public/federation.manifest.json
+      configuracion.ts             # 601: carga configuracion.json (respaldo: environment.ts); configuracion() la devuelve
+public/federation.manifest.json    # remotos en desarrollo (al publicar lo reemplaza la plantilla)
 public/manifest.webmanifest, public/icons/   # 104: instalación como aplicación
 public/silent-check-sso.html       # 104: respuesta de check-sso al reanudar la sesión
 ngsw-config.json                   # 104: qué guarda el service worker
+configuracion.json.plantilla       # 601: la usa el script de publicación de infra (envsubst)
+federation.manifest.json.plantilla # 601: direcciones de los remotos al publicar
+.github/workflows/ci.yml           # 601: pruebas y compilación; en main, la carpeta compilada como artefacto
 ```
 
 ## Reglas
@@ -57,6 +61,7 @@ ngsw-config.json                   # 104: qué guarda el service worker
 - Componentes standalone con `ChangeDetectionStrategy.OnPush` y *signals*.
 - El shell solo hace sesión, diseño, menú y carga de remotos.
 - Si un remoto falla al cargar, `remoto-web-component` o la ruta Angular muestran el estado de error de `docs/diseno-visual.md` sin romper el resto.
+- Ninguna dirección de otro servicio fuera de `environments/environment.ts` (valores de desarrollo): el código usa `configuracion()` de `compartido/configuracion.ts` (601).
 - Archivos en `kebab-case` con sufijo de Angular (`.component.ts`, `.service.ts`).
 
 ## Tema (copia de los valores)

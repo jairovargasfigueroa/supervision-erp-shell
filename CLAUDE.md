@@ -24,11 +24,17 @@ npm run build        # también genera ngsw.json (service worker, 104)
 npm run servir:pwa   # sirve la versión compilada en http://localhost:4200 para probar sin conexión (README.md)
 ```
 
+## Configuración y publicación (601)
+
+- Se compila **una vez** y se publica como archivos estáticos (sin imagen Docker). Las direcciones (Keycloak, gateway, portal) salen de `configuracion.json`, que el script de `infra` escribe al publicar desde `configuracion.json.plantilla`; `src/main.ts` lo lee antes de iniciar Angular y, si no está (desarrollo), usa `src/environments/environment.ts`.
+- Las direcciones de los remotos salen de `federation.manifest.json`; al publicar se reemplaza con `federation.manifest.json.plantilla`.
+- Variables y reglas del servidor de estáticos: `docs/contratos.md` («Publicación»). CI en `.github/workflows/ci.yml`.
+
 ## Native Federation
 
 - `federation.config.mjs`: qué se comparte. Las entradas de `@angular/platform-browser/animations` están en `skip` porque no usamos `@angular/animations`.
-- `public/federation.manifest.json`: dónde está cada remoto (`mf-obras` 4201, `mf-materiales` 4202, `mf-supervision` 4203).
-- `src/main.ts` inicia la federación y luego carga `src/bootstrap.ts`.
+- `public/federation.manifest.json`: dónde está cada remoto en desarrollo (`mf-obras` 4201, `mf-materiales` 4202, `mf-supervision` 4203).
+- `src/main.ts` carga `configuracion.json` e inicia la federación y luego carga `src/bootstrap.ts`.
 - Remotos Angular (`mf-obras`): se cargan con `loadRemoteModule` y se usan como rutas o componentes.
 - Remotos React (`mf-materiales`, `mf-supervision`): se cargan con `loadRemoteModule('<nombre>', './Bootstrap')`, que registra un Web Component (`<mf-materiales>`, `<mf-supervision>`); el shell crea el elemento con `document.createElement` en `remotos/remoto-web-component.component.ts`.
 

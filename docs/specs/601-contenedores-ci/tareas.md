@@ -1,11 +1,10 @@
-# 601 · Contenedores y CI/CD · tareas de `frontend/erp-shell`
+# 601 · Preparar el despliegue · tareas de `frontend/erp-shell`
 
-Requisitos y diseño: `docs/specs/601-contenedores-ci/` de la carpeta que agrupa los proyectos. Contratos: `docs/contratos.md` de este proyecto.
+Requisitos y diseño: `docs/specs/601-contenedores-ci/` de la carpeta que agrupa los proyectos. Al implementarla, estas tareas reemplazan a `frontend/erp-shell/docs/specs/601-contenedores-ci/tareas.md` (eran del borrador anterior).
 
 Marca cada tarea al terminarla (con sus pruebas y su commit).
 
-- [ ] `environment.prod.ts` con las URL de producción de Keycloak, gateway y portal (desde las variables del entorno `produccion`) y `public/federation.manifest.json` generado en el workflow con las URL de los tres remotos
-- [ ] `staticwebapp.config.json`: `navigationFallback` y `Cache-Control: no-cache` en `index.html`, `ngsw.json`, `ngsw-worker.js` y `federation.manifest.json` (service worker de la 104)
-- [ ] `Dockerfile` (`node:24-alpine` para compilar, `nginxinc/nginx-unprivileged:1.29-alpine` para servir) con `nginx.conf` propio y `.dockerignore`
-- [ ] `.github/workflows/ci-cd.yml`: pruebas y build; imagen nginx en GHCR; despliegue de los archivos estáticos con `Azure/static-web-apps-deploy@v1`
-- [ ] Comprobar: la imagen sirve la aplicación en el puerto 8080 sin `root`
+- [x] Aplicar «Cambios a contratos y datos» que tocan este proyecto (`docs/`, `CLAUDE.md`, `.env.example`)
+- [ ] Cargar `configuracion.json` antes de iniciar (inicializador de Angular) con respaldo a los valores de desarrollo; `federation.manifest.json` con las direcciones de los remotos; pruebas
+- [ ] Plantillas `configuracion.json.plantilla` y `federation.manifest.json.plantilla` (con `${VARIABLES}`) que usa el script de publicación de infra
+- [ ] `.github/workflows/ci.yml`: job `prueba` (pruebas y compilación) y job `archivos` (en `main`, la carpeta compilada como artefacto)
