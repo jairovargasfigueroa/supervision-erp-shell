@@ -1,0 +1,5 @@
+{
+  "mf-obras": "${MF_OBRAS_URL}/remoteEntry.json",
+  "mf-materiales": "${MF_MATERIALES_URL}/remoteEntry.json",
+  "mf-supervision": "${MF_SUPERVISION_URL}/remoteEntry.json"
+}
