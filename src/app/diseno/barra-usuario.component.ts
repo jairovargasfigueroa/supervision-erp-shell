@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { environment } from '../../environments/environment';
+import { configuracion } from '../compartido/configuracion';
 import { SesionService } from '../sesion/sesion.service';
 import { aplicacionesWeb, rolPrincipal } from './menu';
 
@@ -77,6 +77,6 @@ export class BarraUsuarioComponent {
   protected readonly sesion = inject(SesionService);
   protected readonly rol = computed(() => rolPrincipal(this.sesion.roles()));
   protected readonly aplicaciones = computed(() =>
-    aplicacionesWeb(this.sesion.roles(), environment.portalUrl),
+    aplicacionesWeb(this.sesion.roles(), configuracion().portalUrl),
   );
 }

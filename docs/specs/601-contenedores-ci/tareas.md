@@ -5,6 +5,6 @@ Requisitos y diseño: `docs/specs/601-contenedores-ci/` de la carpeta que agrupa
 Marca cada tarea al terminarla (con sus pruebas y su commit).
 
 - [x] Aplicar «Cambios a contratos y datos» que tocan este proyecto (`docs/`, `CLAUDE.md`, `.env.example`)
-- [ ] Cargar `configuracion.json` antes de iniciar (inicializador de Angular) con respaldo a los valores de desarrollo; `federation.manifest.json` con las direcciones de los remotos; pruebas
+- [x] Cargar `configuracion.json` antes de iniciar (inicializador de Angular) con respaldo a los valores de desarrollo; `federation.manifest.json` con las direcciones de los remotos; pruebas
 - [ ] Plantillas `configuracion.json.plantilla` y `federation.manifest.json.plantilla` (con `${VARIABLES}`) que usa el script de publicación de infra
 - [ ] `.github/workflows/ci.yml`: job `prueba` (pruebas y compilación) y job `archivos` (en `main`, la carpeta compilada como artefacto)

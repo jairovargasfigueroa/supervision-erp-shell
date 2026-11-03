@@ -1,5 +1,5 @@
 import { DestroyRef, inject, Injectable, InjectionToken, signal } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { configuracion } from '../compartido/configuracion';
 import { EVENTO_CONEXION } from '../sesion/sesion-global';
 
 /** Cada cuánto se vuelve a preguntar al gateway mientras se cree estar sin conexión (104, diseño). */
@@ -12,7 +12,7 @@ export const CONSULTAR_SALUD = new InjectionToken<() => Promise<boolean>>('CONSU
   providedIn: 'root',
   factory: () => async () => {
     try {
-      const respuesta = await fetch(environment.gatewayUrl, {
+      const respuesta = await fetch(configuracion().gatewayUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: '{ salud }' }),
@@ -109,7 +109,7 @@ export class ConexionService {
     const estado = this.estado;
     window.plataforma = {
       ...window.plataforma,
-      configuracion: { gatewayUrl: environment.gatewayUrl },
+      configuracion: { gatewayUrl: configuracion().gatewayUrl },
       conexion: {
         get enLinea() {
           return estado();

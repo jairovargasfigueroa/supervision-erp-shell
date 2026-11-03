@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { openDB, type DBSchema, type IDBPDatabase } from 'idb';
-import { environment } from '../../environments/environment';
+import { configuracion } from '../compartido/configuracion';
 import {
   EVENTO_BORRADORES,
   type AlmacenPlataforma,
@@ -58,7 +58,7 @@ export class AlmacenService implements AlmacenPlataforma {
     }
     window.plataforma = {
       ...window.plataforma,
-      configuracion: { gatewayUrl: environment.gatewayUrl },
+      configuracion: { gatewayUrl: configuracion().gatewayUrl },
       almacen: {
         guardarConsulta: (clave, datos) => this.guardarConsulta(clave, datos),
         leerConsulta: (clave) => this.leerConsulta(clave),

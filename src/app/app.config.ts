@@ -18,6 +18,7 @@ import {
   type IncludeBearerTokenCondition,
 } from 'keycloak-angular';
 import { environment } from '../environments/environment';
+import { configuracion } from './compartido/configuracion';
 import { routes } from './app.routes';
 import { ActualizacionService } from './sin-conexion/actualizacion.service';
 import { ConexionService } from './sin-conexion/conexion.service';
@@ -32,8 +33,8 @@ export const appConfig: ApplicationConfig = {
     // El shell es el único que inicia sesión (001, diseño «ERP»)
     provideKeycloak({
       config: {
-        url: environment.keycloakUrl,
-        realm: environment.realm,
+        url: configuracion().keycloakUrl,
+        realm: configuracion().keycloakRealm,
         clientId: environment.clientId,
       },
       // Sin initOptions: SesionService.iniciar() decide si inicia con Keycloak o sin conexión (104)
@@ -44,7 +45,7 @@ export const appConfig: ApplicationConfig = {
       provide: INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
       useValue: [
         createInterceptorCondition<IncludeBearerTokenCondition>({
-          urlPattern: new RegExp(`^${escapar(environment.gatewayUrl)}`),
+          urlPattern: new RegExp(`^${escapar(configuracion().gatewayUrl)}`),
         }),
       ],
     },

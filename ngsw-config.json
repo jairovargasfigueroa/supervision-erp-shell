@@ -52,6 +52,16 @@
         "maxAge": "30d",
         "maxSize": 1
       }
+    },
+    {
+      "name": "configuracion",
+      "urls": ["/configuracion.json"],
+      "cacheConfig": {
+        "strategy": "freshness",
+        "timeout": "3s",
+        "maxAge": "30d",
+        "maxSize": 1
+      }
     }
   ]
 }
