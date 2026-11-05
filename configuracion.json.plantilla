@@ -1,0 +1,6 @@
+{
+  "keycloakUrl": "${KEYCLOAK_URL}",
+  "keycloakRealm": "${KEYCLOAK_REALM}",
+  "gatewayUrl": "${GATEWAY_URL}/graphql",
+  "portalUrl": "${PORTAL_URL}"
+}

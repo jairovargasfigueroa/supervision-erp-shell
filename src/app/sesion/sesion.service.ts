@@ -13,7 +13,7 @@ import {
   KeycloakEventType,
 } from 'keycloak-angular';
 import Keycloak from 'keycloak-js';
-import { environment } from '../../environments/environment';
+import { configuracion } from '../compartido/configuracion';
 import { RECARGAR_PAGINA } from '../sin-conexion/actualizacion.service';
 import { AlmacenService } from '../sin-conexion/almacen.service';
 import { ConexionService } from '../sin-conexion/conexion.service';
@@ -36,7 +36,7 @@ export const KEYCLOAK_RESPONDE = new InjectionToken<() => Promise<boolean>>('KEY
   providedIn: 'root',
   factory: () => async () => {
     try {
-      const respuesta = await fetch(`${environment.keycloakUrl}/realms/${environment.realm}`, {
+      const respuesta = await fetch(`${configuracion().keycloakUrl}/realms/${configuracion().keycloakRealm}`, {
         mode: 'no-cors',
         cache: 'no-store',
         signal: AbortSignal.timeout(3_000),
@@ -182,7 +182,7 @@ export class SesionService {
     void this.almacen.usarUsuario(null);
     window.plataforma = {
       ...window.plataforma,
-      configuracion: { gatewayUrl: environment.gatewayUrl },
+      configuracion: { gatewayUrl: configuracion().gatewayUrl },
       sesion: undefined,
     };
     window.dispatchEvent(new Event(EVENTO_SESION));
@@ -306,7 +306,7 @@ export class SesionService {
     // Conserva lo que publican otros servicios del shell (conexion, almacen)
     window.plataforma = {
       ...window.plataforma,
-      configuracion: { gatewayUrl: environment.gatewayUrl },
+      configuracion: { gatewayUrl: configuracion().gatewayUrl },
       sesion: usuario
         ? {
             usuario,
