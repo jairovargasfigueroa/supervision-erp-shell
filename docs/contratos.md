@@ -8,7 +8,7 @@
 |---|---|
 | Keycloak | Inicio de sesión OIDC (realm `supervision`, cliente público `erp` con PKCE); `check-sso` con `silent-check-sso.html` al volver la conexión (104) |
 | Microfrontends | Remotos por Native Federation (`federation.manifest.json`): `mf-obras`, `mf-materiales`, `mf-supervision`. En desarrollo, `public/federation.manifest.json` (4201, 4202, 4203); al publicar (601) lo reescribe el script de `infra` desde `federation.manifest.json.plantilla` |
-| `configuracion.json` (601) | Junto a `index.html`, lo escribe el script de publicación de `infra` desde `configuracion.json.plantilla`: `{ keycloakUrl, keycloakRealm, gatewayUrl, portalUrl }`. Se lee en `main.ts` antes de iniciar Angular; si no está (desarrollo), se usan los valores de `src/environments/environment.ts` |
+| `configuracion.json` (601) | Junto a `index.html`, lo escribe el script de publicación de `infra` desde `configuracion.json.plantilla`: `{ keycloakUrl, keycloakRealm, gatewayUrl, portalUrl }`. Se lee en `main.ts` antes de iniciar Angular; si no está (desarrollo), se usan los valores de `src/environments/environment.ts`. En la compilación publicada, sin el archivo, si no es JSON o si le falta un campo, el ERP no arranca y la consola dice por qué (nunca usa los valores de desarrollo) |
 | Gateway | `{ salud }` (sin token) para comprobar la conexión cada 30 s mientras cree estar sin conexión (104) |
 
 ## Expone a los microfrontends

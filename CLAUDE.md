@@ -26,7 +26,7 @@ npm run servir:pwa   # sirve la versión compilada en http://localhost:4200 para
 
 ## Configuración y publicación (601)
 
-- Se compila **una vez** y se publica como archivos estáticos (sin imagen Docker). Las direcciones (Keycloak, gateway, portal) salen de `configuracion.json`, que el script de `infra` escribe al publicar desde `configuracion.json.plantilla`; `src/main.ts` lo lee antes de iniciar Angular y, si no está (desarrollo), usa `src/environments/environment.ts`.
+- Se compila **una vez** y se publica como archivos estáticos (sin imagen Docker). Las direcciones (Keycloak, gateway, portal) salen de `configuracion.json`, que el script de `infra` escribe al publicar desde `configuracion.json.plantilla`; `src/main.ts` lo lee antes de iniciar Angular y, si no está (desarrollo), usa `src/environments/environment.ts`; en la compilación publicada, sin el archivo (o incompleto) no arranca.
 - Las direcciones de los remotos salen de `federation.manifest.json`; al publicar se reemplaza con `federation.manifest.json.plantilla`.
 - Variables y reglas del servidor de estáticos: `docs/contratos.md` («Publicación»). CI en `.github/workflows/ci.yml`.
 

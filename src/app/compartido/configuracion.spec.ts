@@ -4,6 +4,7 @@ import {
   cargarConfiguracion,
   combinarConfiguracion,
   configuracion,
+  esDesarrollo,
 } from './configuracion';
 
 const respuestaJson = (cuerpo: unknown, status = 200): Response =>
@@ -66,6 +67,46 @@ describe('configuracion', () => {
     });
 
     expect(resultado).toEqual(CONFIGURACION_DESARROLLO);
+  });
+
+  it('es desarrollo con ng serve o con la versión compilada en localhost, no en una publicación', () => {
+    expect(esDesarrollo(true, 'erp.azure.localhost')).toBe(true);
+    expect(esDesarrollo(false, 'localhost')).toBe(true);
+    expect(esDesarrollo(false, '127.0.0.1')).toBe(true);
+    expect(esDesarrollo(false, 'erp.azure.localhost')).toBe(false);
+    expect(esDesarrollo(false, 'erp.ejemplo.com')).toBe(false);
+  });
+
+  it('en la compilación publicada usa configuracion.json completo', async () => {
+    const publicada = {
+      keycloakUrl: 'https://keycloak.azure.localhost:8443',
+      keycloakRealm: 'supervision',
+      gatewayUrl: 'https://gateway.azure.localhost:8443/graphql',
+      portalUrl: 'https://portal.azure.localhost:8443',
+    };
+
+    await expect(cargarConfiguracion(async () => respuestaJson(publicada), false)).resolves.toEqual(publicada);
+  });
+
+  it('en la compilación publicada rechaza sin el archivo, si no es JSON o si le falta un campo (nunca localhost)', async () => {
+    await expect(
+      cargarConfiguracion(async () => new Response('No encontrado', { status: 404 }), false),
+    ).rejects.toThrow(/respondió 404/);
+    await expect(
+      cargarConfiguracion(async () => new Response('<!doctype html><html></html>', { status: 200 }), false),
+    ).rejects.toThrow(/no es JSON/);
+    await expect(
+      cargarConfiguracion(async () => {
+        throw new TypeError('Failed to fetch');
+      }, false),
+    ).rejects.toThrow('Failed to fetch');
+    await expect(
+      cargarConfiguracion(
+        async () =>
+          respuestaJson({ keycloakUrl: 'https://keycloak.ejemplo', keycloakRealm: 'supervision', gatewayUrl: '' }),
+        false,
+      ),
+    ).rejects.toThrow(/no trae gatewayUrl, portalUrl/);
   });
 
   it('completa con los valores de desarrollo los campos que faltan, vacíos o que no son texto', () => {
