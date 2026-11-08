@@ -10,6 +10,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { map } from 'rxjs';
 import { SesionService } from '../sesion/sesion.service';
 import { BarraUsuarioComponent } from './barra-usuario.component';
+import { IndicadorConexionComponent } from './indicador-conexion.component';
 import { opcionesMenu } from './menu';
 
 /** Barra superior, menú lateral y espacio de los microfrontends (docs/diseno-visual.md, «Distribución del ERP»). */
@@ -25,17 +26,19 @@ import { opcionesMenu } from './menu';
     RouterLink,
     RouterLinkActive,
     BarraUsuarioComponent,
+    IndicadorConexionComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <mat-toolbar class="barra">
-      @if (!escritorio()) {
+      @if (!escritorio() && opciones().length > 0) {
         <button mat-icon-button aria-label="Abrir el menú" (click)="menu.toggle()">
           <mat-icon fontSet="material-symbols-outlined">menu</mat-icon>
         </button>
       }
       <span class="marca">Supervisión de obras</span>
       <span class="espacio"></span>
+      <app-indicador-conexion />
       <app-barra-usuario />
     </mat-toolbar>
     <mat-sidenav-container class="contenedor">
@@ -43,7 +46,7 @@ import { opcionesMenu } from './menu';
         #menu
         class="menu"
         [mode]="escritorio() ? 'side' : 'over'"
-        [opened]="escritorio()"
+        [opened]="escritorio() && opciones().length > 0"
       >
         <mat-nav-list>
           @for (opcion of opciones(); track opcion.ruta) {

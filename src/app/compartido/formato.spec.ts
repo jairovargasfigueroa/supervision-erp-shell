@@ -3,6 +3,7 @@ import {
   formatearFecha,
   formatearFechaHora,
   formatearMonto,
+  formatearPeriodo,
   formatearPorcentaje,
 } from './formato';
 
@@ -30,5 +31,9 @@ describe('formato', () => {
   it('formatea instantes en hora de La Paz (UTC−4)', () => {
     expect(formatearFecha('2026-11-16T02:00:00Z')).toBe('15/11/2026');
     expect(formatearFechaHora('2026-11-15T18:30:00Z')).toBe('15/11/2026 14:30');
+  });
+
+  it('formatea periodos como mes y año', () => {
+    expect(formatearPeriodo('2026-11')).toBe('Noviembre 2026');
   });
 });

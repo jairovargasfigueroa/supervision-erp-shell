@@ -11,7 +11,7 @@ Parte de la «Plataforma de supervisión de obras». Si existe `../../CLAUDE.md`
 - Node 24 · Angular 22 (standalone, builder esbuild) · SCSS · pruebas con Vitest
 - `@angular-architects/native-federation` 22 como **host dinámico**
 - keycloak-angular 22 + keycloak-js 26 (login OIDC con PKCE) · Angular Material 22 (tema M3)
-- Previsto: PWA en la capa 1
+- PWA (capa 1, 104): `@angular/pwa` (service worker de Angular, `@angular/service-worker`) e IndexedDB con `idb`. El service worker solo se prueba con la versión compilada (`npm run build` y un servidor estático en 4200; ver `README.md`), no con `ng serve`
 - Puerto: `4200`
 
 ## Comandos
@@ -20,14 +20,21 @@ Parte de la «Plataforma de supervisión de obras». Si existe `../../CLAUDE.md`
 npm install
 npm start            # ng serve en http://localhost:4200
 npm test             # ng test (Vitest)
-npm run build
+npm run build        # también genera ngsw.json (service worker, 104)
+npm run servir:pwa   # sirve la versión compilada en http://localhost:4200 para probar sin conexión (README.md)
 ```
+
+## Configuración y publicación (601)
+
+- Se compila **una vez** y se publica como archivos estáticos (sin imagen Docker). Las direcciones (Keycloak, gateway, portal) salen de `configuracion.json`, que el script de `infra` escribe al publicar desde `configuracion.json.plantilla`; `src/main.ts` lo lee antes de iniciar Angular y, si no está (desarrollo), usa `src/environments/environment.ts`; en la compilación publicada, sin el archivo (o incompleto) no arranca.
+- Las direcciones de los remotos salen de `federation.manifest.json`; al publicar se reemplaza con `federation.manifest.json.plantilla`.
+- Variables y reglas del servidor de estáticos: `docs/contratos.md` («Publicación»). CI en `.github/workflows/ci.yml`.
 
 ## Native Federation
 
 - `federation.config.mjs`: qué se comparte. Las entradas de `@angular/platform-browser/animations` están en `skip` porque no usamos `@angular/animations`.
-- `public/federation.manifest.json`: dónde está cada remoto (`mf-obras` 4201, `mf-materiales` 4202, `mf-supervision` 4203).
-- `src/main.ts` inicia la federación y luego carga `src/bootstrap.ts`.
+- `public/federation.manifest.json`: dónde está cada remoto en desarrollo (`mf-obras` 4201, `mf-materiales` 4202, `mf-supervision` 4203).
+- `src/main.ts` carga `configuracion.json` e inicia la federación y luego carga `src/bootstrap.ts`.
 - Remotos Angular (`mf-obras`): se cargan con `loadRemoteModule` y se usan como rutas o componentes.
 - Remotos React (`mf-materiales`, `mf-supervision`): se cargan con `loadRemoteModule('<nombre>', './Bootstrap')`, que registra un Web Component (`<mf-materiales>`, `<mf-supervision>`); el shell crea el elemento con `document.createElement` en `remotos/remoto-web-component.component.ts`.
 
