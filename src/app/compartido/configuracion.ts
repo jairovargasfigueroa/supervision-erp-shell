@@ -1,5 +1,14 @@
-import { isDevMode } from '@angular/core';
 import { environment } from '../../environments/environment';
+
+// 602: este archivo lo importa main.ts ANTES de initFederation, así que no puede importar nada compartido por Native
+// Federation (@angular/*): en la compilación publicada esos paquetes solo existen en el import map que arma
+// initFederation, y el shell no arrancaría («Unable to resolve specifier '@angular/core'»). Por eso no usa isDevMode.
+declare const ngDevMode: unknown;
+
+/** Lo mismo que `isDevMode()` de Angular: la compilación de producción define `ngDevMode` como `false`. */
+function modoDesarrolloDeAngular(): boolean {
+  return typeof ngDevMode === 'undefined' || !!ngDevMode;
+}
 
 /**
  * Direcciones que cambian según dónde se publique el ERP (601). La compilación es una sola: al publicar, el script de
@@ -55,7 +64,7 @@ export function combinarConfiguracion(datos: unknown): Configuracion {
  * (producción local en `*.localhost` o la nube) nunca lo es.
  */
 export function esDesarrollo(
-  modoDesarrollo: boolean = isDevMode(),
+  modoDesarrollo: boolean = modoDesarrolloDeAngular(),
   host: string = globalThis.location?.hostname ?? '',
 ): boolean {
   return modoDesarrollo || host === 'localhost' || host === '127.0.0.1';
